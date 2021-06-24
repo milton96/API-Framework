@@ -45,7 +45,18 @@ namespace API_Framework.Controllers
             try
             {
                 if (login == null) throw new Exception("No se proporcionaron datos");
-                return Ok();
+
+                Usuario usuario = await Usuario.Login(login);
+
+                string token = "";
+
+                object res = new
+                {
+                    token,
+                    usuario
+                };
+
+                return Ok(res);
             }
             catch (Exception ex)
             {
