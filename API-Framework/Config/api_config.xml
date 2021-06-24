@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<api>
+  <secret>ue2YFERZtNnzrRrSEwBFjXVHM</secret>
+  <issuer>www.milton96.io</issuer>
+  <audience>www.sample.io/api</audience>
+  <expires>5</expires>
+</api>
