@@ -160,6 +160,8 @@
     <Compile Include="Helpers\MD5Helper.cs" />
     <Compile Include="Helpers\XMLHelper.cs" />
     <Compile Include="Models\Conexion.cs" />
+    <Compile Include="Models\Rol.cs" />
+    <Compile Include="Models\Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
