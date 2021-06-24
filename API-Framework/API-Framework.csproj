@@ -157,6 +157,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\MD5Helper.cs" />
     <Compile Include="Helpers\XMLHelper.cs" />
     <Compile Include="Models\Conexion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
