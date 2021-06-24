@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <server>localhost\SQLEXPRESS</server>
+  <port></port>
+  <database>Tienda</database>
+  <user>LocalLogin</user>
+  <pass>64klKk**CBgH</pass>
+</config>
