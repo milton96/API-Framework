@@ -1,4 +1,5 @@
-﻿using API_Framework.Models;
+﻿using API_Framework.Helpers;
+using API_Framework.Models;
 using API_Framework.Requests;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace API_Framework.Controllers
         [Route("login")]
         public async Task<IHttpActionResult> Login(LoginRequest login)
         {
+            ErrorHelper errors = new ErrorHelper();
             try
             {
                 if (login == null) throw new Exception("No se proporcionaron datos");
@@ -47,7 +49,8 @@ namespace API_Framework.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                errors.Add(ex.Message);
+                return Content(HttpStatusCode.BadRequest, errors.GetErrors());
             }
         }
     }

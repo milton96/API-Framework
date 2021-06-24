@@ -26,9 +26,14 @@ namespace API_Framework.Helpers
             Errors.Add(mensaje);
         }
 
-        public List<string> GetErrors()
+        public object GetErrors()
         {
-            return Errors;
+            return new
+            {
+                Errores = Errors,
+                Cantidad = Errors.Count,
+                ContieneErrores = Errors.Any()
+            };
         }
     }
 }
