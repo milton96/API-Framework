@@ -11,14 +11,14 @@ namespace API_Framework.Helpers
     /// </summary>
     public class XMLHelper
     {
-        private string a;
+        private string _filename;
         /// <summary>
         /// Lee un archivo XML
         /// </summary>
         /// <param name="filename">Nombre del archivo</param>
         public XMLHelper(string filename)
         {
-            a = String.Format(@"{0}{1}{2}", AppDomain.CurrentDomain.BaseDirectory, @"Config\", filename);
+            _filename = String.Format(@"{0}{1}{2}", AppDomain.CurrentDomain.BaseDirectory, @"Config\", filename);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace API_Framework.Helpers
         public string getValor(string tag)
         {
             string value = "";
-            using (var xml = XmlReader.Create(a))
+            using (var xml = XmlReader.Create(_filename))
             {
                 xml.ReadToFollowing(tag);
                 value = xml.ReadElementContentAsString();
