@@ -159,6 +159,7 @@
     </Compile>
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\JWTHelper.cs" />
     <Compile Include="Helpers\MD5Helper.cs" />
     <Compile Include="Helpers\XMLHelper.cs" />
     <Compile Include="Models\Conexion.cs" />
