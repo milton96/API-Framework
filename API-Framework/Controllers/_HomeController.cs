@@ -1,4 +1,5 @@
 ﻿using API_Framework.Models;
+using API_Framework.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,21 @@ namespace API_Framework.Controllers
                     estatus = "API en línea"
                 };
                 return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<IHttpActionResult> Login(LoginRequest login)
+        {
+            try
+            {
+                if (login == null) throw new Exception("No se proporcionaron datos");
+                return Ok();
             }
             catch (Exception ex)
             {
