@@ -48,12 +48,11 @@ namespace API_Framework.Controllers
 
                 Usuario usuario = await Usuario.Login(login);
 
-                string token = "";
+                string token = await JWTHelper.GenerarToken(usuario);
 
                 object res = new
                 {
-                    token,
-                    usuario
+                    token
                 };
 
                 return Ok(res);
