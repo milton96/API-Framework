@@ -18,7 +18,6 @@ namespace API_Framework.Controllers
         {
             try
             {
-                var a = User;
                 object res = new
                 {
                     estatus = "En sesión"
