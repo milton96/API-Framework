@@ -271,5 +271,34 @@ namespace API_Framework.Models
 
             return u;
         }
+
+        public async Task<int> Desactivar()
+        {
+            int result = 0;
+            try
+            {
+                string query = @"UPDATE [dbo].[Usuario] SET Activo = @Activo WHERE ID = @ID";
+                using (SqlConnection con = Conectar())
+                {
+                    using (SqlCommand command = new SqlCommand(query, con)
+                    {
+                        CommandType = CommandType.Text,
+                        CommandTimeout = 60
+                    })
+                    {
+                        command.Parameters.AddWithValue("@ID", Id);
+                        command.Parameters.AddWithValue("@Activo", false);
+                        con.Open();
+                        result = await command.ExecuteNonQueryAsync();
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
+        }
     }
 }

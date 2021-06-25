@@ -111,5 +111,28 @@ namespace API_Framework.Controllers
                 return Content(HttpStatusCode.BadRequest, errors.GetErrors());
             }
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Desactivar(int id)
+        {
+            ErrorHelper errors = new ErrorHelper();
+            try
+            {
+                if (id <= 0) throw new Exception("Usuario no válido");
+                Usuario u = await Usuario.ObtenerPorId(id);
+                if (u == null) throw new Exception("Usuario inexistente");
+
+                int total = await u.Desactivar();
+                if (total <= 0) throw new Exception("Ocurrió un problema al desactivar el usuario");
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                errors.Add(ex.Message);
+                return Content(HttpStatusCode.BadRequest, errors.GetErrors());
+            }
+        }
     }
 }
