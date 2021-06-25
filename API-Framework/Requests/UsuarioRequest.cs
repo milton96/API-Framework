@@ -18,7 +18,7 @@ namespace API_Framework.Requests
         [Required(ErrorMessage = "El correo del usuario es requerido")]
         [RegularExpression(RegexHelper.Correo, ErrorMessage = "El correo no tiene el formato correcto")]
         public string Correo { get; set; }
-        [Required(ErrorMessage = "La contraseña del usuario es requerida")]
+        //[Required(ErrorMessage = "La contraseña del usuario es requerida")]
         public string Password { get; set; }
     }
 }
