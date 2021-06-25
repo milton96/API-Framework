@@ -92,5 +92,24 @@ namespace API_Framework.Controllers
                 return Content(HttpStatusCode.BadRequest, errors.GetErrors());
             }
         }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Obtener(int id)
+        {
+            ErrorHelper errors = new ErrorHelper();
+            try
+            {
+                if (id <= 0) throw new Exception("Usuario no válido");
+                Usuario usuario = await Usuario.ObtenerPorId(id);
+                if (usuario == null) throw new Exception("Usuario inexistente");
+                return Ok(usuario);
+            }
+            catch (Exception ex)
+            {
+                errors.Add(ex.Message);
+                return Content(HttpStatusCode.BadRequest, errors.GetErrors());
+            }
+        }
     }
 }
