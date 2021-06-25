@@ -1,4 +1,5 @@
-﻿using API_Framework.Helpers;
+﻿using API_Framework.Handlers;
+using API_Framework.Helpers;
 using API_Framework.Models;
 using API_Framework.Requests;
 using System;
@@ -36,6 +37,7 @@ namespace API_Framework.Controllers
 
         [HttpPost]
         [Route("")]
+        [Permisos((int)CodigosPermisos.Administrador)]
         public async Task<IHttpActionResult> Crear(UsuarioRequest usuario)
         {
             ErrorHelper errors = new ErrorHelper();
@@ -119,6 +121,7 @@ namespace API_Framework.Controllers
 
         [HttpDelete]
         [Route("{id}")]
+        [Permisos((int)CodigosPermisos.Administrador)]
         public async Task<IHttpActionResult> Desactivar(int id)
         {
             ErrorHelper errors = new ErrorHelper();
@@ -142,6 +145,7 @@ namespace API_Framework.Controllers
 
         [HttpPut]
         [Route("{id}")]
+        [Permisos((int)CodigosPermisos.Administrador)]
         public async Task<IHttpActionResult> Editar(int id, UsuarioRequest usuario)
         {
             ErrorHelper errors = new ErrorHelper();

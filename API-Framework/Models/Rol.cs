@@ -62,4 +62,11 @@ namespace API_Framework.Models
             return r;
         }
     }
+
+    public enum CodigosPermisos
+    {
+        Administrador = 300,
+        Empleado = 200,
+        Cliente = 100
+    }
 }
