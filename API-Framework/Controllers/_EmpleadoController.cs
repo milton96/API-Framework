@@ -175,9 +175,11 @@ namespace API_Framework.Controllers
 
                 u.Nombre = usuario.Nombre;
                 u.ApellidoPaterno = usuario.ApellidoPaterno;
-                u.ApellidoMaterno = usuario.ApellidoMaterno;                
+                u.ApellidoMaterno = usuario.ApellidoMaterno;
 
-                return Ok();
+                await u.Actualizar();
+
+                return Ok("Usuario actualizado");
             }
             catch (Exception ex)
             {
