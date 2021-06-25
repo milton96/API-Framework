@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 
 namespace API_Framework.Controllers
 {
@@ -45,6 +46,19 @@ namespace API_Framework.Controllers
             try
             {
                 if (login == null) throw new Exception("No se proporcionaron datos");
+
+                if (!ModelState.IsValid)
+                {
+                    foreach (KeyValuePair<string, ModelState> model in ModelState)
+                    {
+                        foreach (ModelError error in model.Value.Errors)
+                        {
+                            errors.Add(error.ErrorMessage);
+                        }
+                    }
+
+                    return Content(HttpStatusCode.BadRequest, errors.GetErrors());
+                }
 
                 Usuario usuario = await Usuario.Login(login);
 
