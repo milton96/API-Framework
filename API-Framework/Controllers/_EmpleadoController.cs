@@ -1,10 +1,14 @@
-﻿using System;
+﻿using API_Framework.Helpers;
+using API_Framework.Models;
+using API_Framework.Requests;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 
 namespace API_Framework.Controllers
 {
@@ -27,6 +31,65 @@ namespace API_Framework.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("")]
+        public async Task<IHttpActionResult> Crear(UsuarioRequest usuario)
+        {
+            ErrorHelper errors = new ErrorHelper();
+            try
+            {
+                if (usuario == null) throw new Exception("No se recibieron datos");
+
+                if (!ModelState.IsValid)
+                {
+                    foreach (KeyValuePair<string, ModelState> model in ModelState)
+                    {
+                        foreach (ModelError error in model.Value.Errors)
+                        {
+                            errors.Add(error.ErrorMessage);
+                        }
+                    }
+
+                    return Content(HttpStatusCode.BadRequest, errors.GetErrors());
+                }
+
+                Rol rol = await Rol.ObtenerPorCodigo(usuario.Rol);
+                if (rol == null) throw new Exception("El rol no es válido");                
+
+                Usuario u = new Usuario();
+                u.IdRol = rol;
+                u.Nombre = usuario.Nombre;
+                u.ApellidoPaterno = usuario.ApellidoPaterno;
+                u.ApellidoMaterno = usuario.ApellidoMaterno;
+                u.Correo = usuario.Correo;
+                u.Password = usuario.Password;
+                u.Id = await u.Guardar();
+                return Ok(u);
+            }
+            catch (Exception ex)
+            {
+                errors.Add(ex.Message);
+                return Content(HttpStatusCode.BadRequest, errors.GetErrors());
+            }
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<IHttpActionResult> Obtener()
+        {
+            ErrorHelper errors = new ErrorHelper();
+            try
+            {
+                List<Usuario> usuarios = await Usuario.ObtenerTodos();
+                return Ok(usuarios);
+            }
+            catch (Exception ex)
+            {
+                errors.Add(ex.Message);
+                return Content(HttpStatusCode.BadRequest, errors.GetErrors());
             }
         }
     }

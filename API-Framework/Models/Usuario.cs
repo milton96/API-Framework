@@ -97,5 +97,110 @@ namespace API_Framework.Models
             }
             return u;
         }
+
+        public async Task<int> Guardar()
+        {
+            int id = 0;
+            try
+            {
+                string pass = MD5Helper.CalcularHash(Password);
+                string query = @"INSERT INTO [dbo].[Usuario] VALUES(@Rol, @Nombre, @ApellidoPaterno, @ApellidoMaterno, @Correo, @Password, @Activo); SELECT SCOPE_IDENTITY()";
+                using (SqlConnection con = Conectar())
+                {
+                    using (SqlCommand command = new SqlCommand(query, con)
+                    {
+                        CommandType = CommandType.Text,
+                        CommandTimeout = 60
+                    })
+                    {
+                        command.Parameters.AddWithValue("@Rol", IdRol.Id);
+                        command.Parameters.AddWithValue("@Nombre", Nombre);
+                        command.Parameters.AddWithValue("@ApellidoPaterno", ApellidoPaterno.ToDB());
+                        command.Parameters.AddWithValue("@ApellidoMaterno", ApellidoMaterno.ToDB());
+                        command.Parameters.AddWithValue("@Correo", Correo);
+                        command.Parameters.AddWithValue("@Password", pass);
+                        command.Parameters.AddWithValue("@Activo", true);
+                        con.Open();
+                        id = Convert.ToInt32(await command.ExecuteScalarAsync());
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return id;
+        }
+
+        public static async Task<List<Usuario>> ObtenerTodos()
+        {
+            List<Usuario> usuarios = new List<Usuario>();
+            try
+            {
+                string query = @"SELECT U.*, R.Nombre AS NombreRol, R.Codigo AS CodigoRol, R.Activo AS ActivoRol FROM [dbo].[Usuario] U
+	                                INNER JOIN  [dbo].[Rol] R ON R.Id = U.IdRol";
+                using (SqlConnection con = Conectar())
+                {
+                    using (SqlCommand command = new SqlCommand(query, con)
+                    {
+                        CommandType = CommandType.Text,
+                        CommandTimeout = 60
+                    })
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            var i = new
+                            {
+                                Id = reader.GetOrdinal("Id"),
+                                Rol = new
+                                {
+                                    Id = reader.GetOrdinal("IdRol"),
+                                    Nombre = reader.GetOrdinal("NombreRol"),
+                                    Codigo = reader.GetOrdinal("CodigoRol"),
+                                    Activo = reader.GetOrdinal("ActivoRol")
+                                },
+                                Nombre = reader.GetOrdinal("Nombre"),
+                                ApellidoPaterno = reader.GetOrdinal("ApellidoPaterno"),
+                                ApellidoMaterno = reader.GetOrdinal("ApellidoMaterno"),
+                                Correo = reader.GetOrdinal("Correo"),
+                                Password = reader.GetOrdinal("Password"),
+                                Activo = reader.GetOrdinal("Activo")
+                            };
+
+                            while (reader.Read())
+                            {
+                                Usuario u = new Usuario();
+                                u.Id = reader.GetValor<int>(i.Id);
+                                u.Nombre = reader.GetValor<string>(i.Nombre);
+                                u.ApellidoPaterno = reader.GetValor<string>(i.ApellidoPaterno);
+                                u.ApellidoMaterno = reader.GetValor<string>(i.ApellidoMaterno);
+                                u.Correo = reader.GetValor<string>(i.Correo);
+                                //u.Password = reader.GetValor<string>(i.Password);
+                                u.Activo = reader.GetValor<bool>(i.Activo);
+                                u.IdRol = new Rol()
+                                {
+                                    Id = reader.GetValor<int>(i.Rol.Id),
+                                    Nombre = reader.GetValor<string>(i.Rol.Nombre),
+                                    Codigo = reader.GetValor<int>(i.Rol.Codigo),
+                                    Activo = reader.GetValor<bool>(i.Rol.Activo)
+                                };
+
+                                usuarios.Add(u);
+                            }
+                        }
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return usuarios;
+        }
     }
 }
