@@ -179,6 +179,7 @@
     <Compile Include="Helpers\RegexHelper.cs" />
     <Compile Include="Helpers\XMLHelper.cs" />
     <Compile Include="Models\Conexion.cs" />
+    <Compile Include="Models\Producto.cs" />
     <Compile Include="Models\Rol.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
