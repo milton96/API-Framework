@@ -70,5 +70,64 @@ namespace API_Framework.Models
             }
             return id;
         }
+
+        public static async Task<List<Producto>> ObtenerTodos()
+        {
+            List<Producto> productos = new List<Producto>();
+            try
+            {
+                string query = @"SELECT * FROM [dbo].[Producto]";
+                using (SqlConnection con = Conectar())
+                {
+                    using (SqlCommand command = new SqlCommand(query, con)
+                    {
+                        CommandType = CommandType.Text,
+                        CommandTimeout = 60
+                    })
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            var i = new
+                            {
+                                Id = reader.GetOrdinal("Id"),
+                                CreadoPor = reader.GetOrdinal("CreadoPor"),
+                                ModificadoPor = reader.GetOrdinal("ModificadoPor"),
+                                Nombre = reader.GetOrdinal("Nombre"),
+                                Precio = reader.GetOrdinal("Precio"),
+                                Codigo = reader.GetOrdinal("Codigo"),
+                                Stock = reader.GetOrdinal("Stock"),
+                                Imagen = reader.GetOrdinal("Imagen"),
+                                Creado = reader.GetOrdinal("Creado"),
+                                Modificado = reader.GetOrdinal("Modificado"),
+                                Activo = reader.GetOrdinal("Activo")
+                            };
+
+                            while(reader.Read())
+                            {
+                                Producto p = new Producto();
+                                p.Id = reader.GetValor<int>(i.Id);
+                                p.CreadoPor = await Usuario.ObtenerPorId(reader.GetValor<int>(i.CreadoPor));
+                                p.ModificadoPor = await Usuario.ObtenerPorId(reader.GetValor<int>(i.ModificadoPor));
+                                p.Nombre = reader.GetValor<string>(i.Nombre);
+                                p.Precio = reader.GetValor<decimal>(i.Precio);
+                                p.Codigo = reader.GetValor<string>(i.Codigo);
+                                p.Stock = reader.GetValor<int>(i.Stock);
+                                p.Imagen = reader.GetValor<string>(i.Imagen);
+                                p.Creado = reader.GetValor<DateTime>(i.Creado).ToCST();
+                                p.Modificado = reader.GetValor<DateTime>(i.Modificado).ToCST();
+                                productos.Add(p);
+                            }
+                        }
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return productos;
+        }
     }
 }

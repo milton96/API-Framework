@@ -67,5 +67,22 @@ namespace API_Framework.Controllers
                 return Content(HttpStatusCode.BadRequest, errors.GetErrors());
             }
         }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<IHttpActionResult> Obtener()
+        {
+            ErrorHelper errors = new ErrorHelper();
+            try
+            {
+                List<Producto> productos = await Producto.ObtenerTodos();
+                return Ok(productos);
+            }
+            catch (Exception ex)
+            {
+                errors.Add(ex.Message);
+                return Content(HttpStatusCode.BadRequest, errors.GetErrors());
+            }
+        }
     }
 }
