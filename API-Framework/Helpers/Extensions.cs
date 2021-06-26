@@ -34,5 +34,15 @@ namespace API_Framework.Helpers
                 throw new Exception("El usuario no es válido");
             return id;
         }
+
+        public static DateTime ToUTC(this DateTime dateTime)
+        {
+            return dateTime.ToUniversalTime();
+        }
+
+        public static DateTime ToCST(this DateTime dateTime)
+        {
+            return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(dateTime, "Central Standard Time (Mexico)");
+        }
     }
 }
