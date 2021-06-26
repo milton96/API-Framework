@@ -1,4 +1,7 @@
-﻿using API_Framework.Helpers;
+﻿using API_Framework.Handlers;
+using API_Framework.Helpers;
+using API_Framework.Models;
+using API_Framework.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +17,55 @@ namespace API_Framework.Controllers
     [RoutePrefix("api/producto")]
     public class _ProductoController : ApiController
     {
-        
+        [HttpPost]
+        [Route("")]
+        [Permisos((int)CodigosPermisos.Administrador, (int)CodigosPermisos.Empleado)]
+        public async Task<IHttpActionResult> Crear(ProductoRequest producto)
+        {
+            ErrorHelper errors = new ErrorHelper();
+            try
+            {
+                if (producto == null) throw new Exception("No se recibieron datos");
+                if (!ModelState.IsValid)
+                {
+                    foreach (KeyValuePair<string, ModelState> model in ModelState)
+                    {
+                        foreach (ModelError error in model.Value.Errors)
+                        {
+                            errors.Add(error.ErrorMessage);
+                        }
+                    }
+
+                    return Content(HttpStatusCode.BadRequest, errors.GetErrors());
+                }
+
+                int usuario_sesion = User.Identity.GetId();
+
+                Producto p = new Producto();
+                p.Nombre = producto.Nombre;
+                p.Precio = producto.Precio;
+                p.Codigo = producto.Codigo;
+                p.Stock = producto.Stock;
+                p.Imagen = producto.Imagen;
+                p.Activo = producto.Activo;
+                p.CreadoPor = new Usuario()
+                {
+                    Id = usuario_sesion
+                };
+                p.ModificadoPor = new Usuario()
+                {
+                    Id = usuario_sesion
+                };
+
+                p.Id = await p.Guardar();
+
+                return Ok(p);
+            }
+            catch (Exception ex)
+            {
+                errors.Add(ex.Message);
+                return Content(HttpStatusCode.BadRequest, errors.GetErrors());
+            }
+        }
     }
 }
