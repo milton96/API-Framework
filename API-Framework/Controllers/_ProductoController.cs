@@ -84,5 +84,24 @@ namespace API_Framework.Controllers
                 return Content(HttpStatusCode.BadRequest, errors.GetErrors());
             }
         }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> Obtener(int id)
+        {
+            ErrorHelper errors = new ErrorHelper();
+            try
+            {
+                if (id <= 0) throw new Exception("No es un producto válido.");
+                Producto producto = await Producto.ObtenerPorId(id);
+                if (producto == null) throw new Exception("El producto no existe.");
+                return Ok(producto);
+            }
+            catch (Exception ex)
+            {
+                errors.Add(ex.Message);
+                return Content(HttpStatusCode.BadRequest, errors.GetErrors());
+            }
+        }
     }
 }

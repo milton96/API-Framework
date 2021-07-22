@@ -140,5 +140,69 @@ namespace API_Framework.Models
             }
             return productos;
         }
+
+        public static async Task<Producto> ObtenerPorId(int id)
+        {
+            Producto producto = null;
+            try
+            {
+                string query = @"SELECT * FROM [dbo].[Producto] WHERE Id = @Id";
+                using (SqlConnection con = Conectar())
+                {
+                    using (SqlCommand command = new SqlCommand(query, con)
+                    {
+                        CommandType = CommandType.Text,
+                        CommandTimeout = 60
+                    })
+                    {
+                        command.Parameters.AddWithValue("@Id", id);
+                        con.Open();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            var i = new
+                            {
+                                Id = reader.GetOrdinal("Id"),
+                                CreadoPor = reader.GetOrdinal("CreadoPor"),
+                                ModificadoPor = reader.GetOrdinal("ModificadoPor"),
+                                Nombre = reader.GetOrdinal("Nombre"),
+                                Precio = reader.GetOrdinal("Precio"),
+                                Codigo = reader.GetOrdinal("Codigo"),
+                                Stock = reader.GetOrdinal("Stock"),
+                                Imagen = reader.GetOrdinal("Imagen"),
+                                Creado = reader.GetOrdinal("Creado"),
+                                Modificado = reader.GetOrdinal("Modificado"),
+                                Activo = reader.GetOrdinal("Activo")
+                            };
+
+                            if (reader.Read())
+                            {
+                                Task<Usuario> creadopor = Usuario.ObtenerPorId(reader.GetValor<int>(i.CreadoPor));
+                                Task<Usuario> modificadopor = Usuario.ObtenerPorId(reader.GetValor<int>(i.ModificadoPor));
+                                producto = new Producto();
+                                producto.Id = reader.GetValor<int>(i.Id);
+                                producto.Nombre = reader.GetValor<string>(i.Nombre);
+                                producto.Precio = reader.GetValor<decimal>(i.Precio);
+                                producto.Codigo = reader.GetValor<string>(i.Codigo);
+                                producto.Stock = reader.GetValor<int>(i.Stock);
+                                producto.Imagen = reader.GetValor<string>(i.Imagen);
+                                producto.Creado = reader.GetValor<DateTime>(i.Creado).ToCST();
+                                producto.Modificado = reader.GetValor<DateTime>(i.Modificado).ToCST();
+
+                                await Task.WhenAll(creadopor, modificadopor);
+
+                                producto.CreadoPor = creadopor.Result;
+                                producto.ModificadoPor = modificadopor.Result;
+                            }
+                        }
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return producto;
+        }
     }
 }
