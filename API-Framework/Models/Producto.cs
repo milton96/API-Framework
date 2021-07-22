@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -102,13 +103,16 @@ namespace API_Framework.Models
                                 Modificado = reader.GetOrdinal("Modificado"),
                                 Activo = reader.GetOrdinal("Activo")
                             };
-
+                            Stopwatch st = new Stopwatch();
+                            st.Start();
                             while(reader.Read())
                             {
+                                Task<Usuario> creadopor = Usuario.ObtenerPorId(reader.GetValor<int>(i.CreadoPor));
+                                Task<Usuario> modificadopor = Usuario.ObtenerPorId(reader.GetValor<int>(i.ModificadoPor));
                                 Producto p = new Producto();
                                 p.Id = reader.GetValor<int>(i.Id);
-                                p.CreadoPor = await Usuario.ObtenerPorId(reader.GetValor<int>(i.CreadoPor));
-                                p.ModificadoPor = await Usuario.ObtenerPorId(reader.GetValor<int>(i.ModificadoPor));
+                                //p.CreadoPor = await Usuario.ObtenerPorId(reader.GetValor<int>(i.CreadoPor));
+                                //p.ModificadoPor = await Usuario.ObtenerPorId(reader.GetValor<int>(i.ModificadoPor));
                                 p.Nombre = reader.GetValor<string>(i.Nombre);
                                 p.Precio = reader.GetValor<decimal>(i.Precio);
                                 p.Codigo = reader.GetValor<string>(i.Codigo);
@@ -116,8 +120,15 @@ namespace API_Framework.Models
                                 p.Imagen = reader.GetValor<string>(i.Imagen);
                                 p.Creado = reader.GetValor<DateTime>(i.Creado).ToCST();
                                 p.Modificado = reader.GetValor<DateTime>(i.Modificado).ToCST();
+                                
+                                await Task.WhenAll(creadopor, modificadopor);
+
+                                p.CreadoPor = creadopor.Result;
+                                p.ModificadoPor = modificadopor.Result;
                                 productos.Add(p);
                             }
+                            st.Stop();
+                            Debug.WriteLine($"Tiempo invertido con Task.WhenAll: {st.Elapsed.TotalMilliseconds}");
                         }
                         con.Close();
                     }
