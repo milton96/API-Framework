@@ -178,6 +178,7 @@
     <Compile Include="Helpers\JWTHelper.cs" />
     <Compile Include="Helpers\MD5Helper.cs" />
     <Compile Include="Helpers\RegexHelper.cs" />
+    <Compile Include="Helpers\TablaHelper.cs" />
     <Compile Include="Helpers\XMLHelper.cs" />
     <Compile Include="Models\Conexion.cs" />
     <Compile Include="Models\Producto.cs" />

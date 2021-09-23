@@ -77,5 +77,33 @@ namespace API_Framework.Controllers
                 return Content(HttpStatusCode.BadRequest, errors.GetErrors());
             }
         }
+
+        [HttpPost]
+        [Route("tabla-prueba")]
+        public IHttpActionResult TablaPrueba()
+        {
+            ErrorHelper errors = new ErrorHelper();
+            try
+            {
+                TablaHelper tabla = TablaHelper.TablaPrueba(5, 5);
+
+                tabla.Ordenar();
+                object res = new
+                {
+                    tabla
+                };
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                errors.Add(ex.Message);
+                object res = new
+                {
+                    errors = errors.GetErrors(),
+                    tabla = new TablaHelper()
+                };
+                return Content(HttpStatusCode.BadRequest, res);
+            }
+        }
     }
 }
