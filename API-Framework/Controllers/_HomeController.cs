@@ -87,7 +87,7 @@ namespace API_Framework.Controllers
             {
                 TablaHelper tabla = TablaHelper.TablaPrueba(5, 5);
 
-                tabla.Ordenar();
+                //tabla.Ordenar();
                 object res = new
                 {
                     tabla

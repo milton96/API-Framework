@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 namespace API_Framework.Helpers
@@ -33,15 +34,18 @@ namespace API_Framework.Helpers
 
             // Generar columnas
             List<Columna> cols = new List<Columna>();
+            List<int> colsOcuapdas = new List<int>();
             for (int i = 0; i < columnas; i++)
             {
+                int pos = GenPosRandom(colsOcuapdas, columnas);
                 cols.Add(new Columna()
                 {
                     Filtrar = GenRandom(),
                     Ordenar = GenRandom(),
-                    Posicion = i + 1,
-                    Valor = $"Columna {i + 1}"
+                    Posicion = pos,
+                    Valor = $"Columna {pos}"
                 });
+                colsOcuapdas.Add(pos);
             }
             tabla.Columnas = cols;
 
@@ -73,14 +77,16 @@ namespace API_Framework.Helpers
 
         private static bool GenRandom()
         {
-            Random random = new Random();
+            Thread.Sleep(15);
+            Random random = new Random(DateTime.Now.Millisecond);
             int r = random.Next(1, 101);
             return r > 50;
         }
 
         private static int GenPosRandom(IEnumerable<int> posOcuapdas, int max)
         {
-            Random random = new Random();
+            Thread.Sleep(8);
+            Random random = new Random(DateTime.Now.Millisecond);
             int r = 0;
             do
             {
